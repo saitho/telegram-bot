@@ -1,0 +1,38 @@
+{
+  "name": "my-npm-project",
+  "description": "",
+  "version": "1.0.0-dev",
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+  ],
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saitho/nodejs-package-template.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "docs:build": "typedoc --out ./docs --mode modules --tsconfig ./tsconfig.json ./src/ && touch ./docs/.nojekyll",
+    "test": "jest --detectOpenHandles --coverage --verbose",
+    "semantic-release": "semantic-release",
+    "commit": "git-cz"
+  },
+  "devDependencies": {
+    "@saithodev/semantic-release-sharedconf-npm": "^2.1.0",
+    "@types/jest": "^26.0.7",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "jest": "^26.1.0",
+    "semantic-release": "^17.1.1",
+    "ts-jest": "^26.1.4",
+    "ts-mockito": "^2.6.1",
+    "typedoc": "^0.17.8",
+    "typescript": "^3.9.7"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
