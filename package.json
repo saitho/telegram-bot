@@ -4,15 +4,15 @@
   "version": "1.0.0-dev",
   "author": "",
   "license": "MIT",
-  "keywords": [
-  ],
-  "main": "dist/index.js",
+  "keywords": [],
+  "main": "dist/server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/saitho/nodejs-package-template.git"
   },
   "scripts": {
     "build": "tsc",
+    "start": "node dist/main.js",
     "docs:build": "typedoc --out ./docs --mode modules --tsconfig ./tsconfig.json ./src/ && touch ./docs/.nojekyll",
     "test": "jest --detectOpenHandles --coverage --verbose",
     "semantic-release": "semantic-release",
@@ -34,5 +34,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "telegraf": "^3.38.0"
   }
 }
