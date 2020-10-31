@@ -36,6 +36,8 @@
     }
   },
   "dependencies": {
+    "better-sqlite3": "^7.1.1",
+    "dotenv": "^8.2.0",
     "telegraf": "^3.38.0"
   }
 }
