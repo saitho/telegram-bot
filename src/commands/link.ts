@@ -1,8 +1,13 @@
 import {SceneContextMessageUpdate} from "telegraf/typings/stage";
 import WizardScene from "telegraf/scenes/wizard";
 import {Command} from "../core/command";
+import {DiscordClient} from "../core/discord-client";
 
-let tempId = Math.random(); // should be sufficient here
+function generateRandomId(): string {
+    return Math.ceil(Math.random() * 100000).toString();
+}
+
+let tempId = generateRandomId(); // should be sufficient here
 
 export class LinkCommand extends Command {
     readonly name = 'link'
@@ -19,20 +24,28 @@ export class LinkCommand extends Command {
                 ctx.replyWithMarkdown('Please tell me your Discord username. For example `Zenyatta#1815`.')
                 return ctx.wizard.next()
             },
-            (ctx) => {
-                // Verify Discord syntax
-                const discordSyntax = new RegExp("^[\\w ]+#\\d{4}$")
-                if (!ctx.update.message.text.match(discordSyntax)) {
-                    ctx.reply('This does not look like a valid Discord name to me. Please try again!')
-                    return
-                }
+           async (ctx) => {
+               // Verify Discord syntax
+               const discordSyntax = new RegExp("^[\\w ]+#\\d{4}$")
+               const discordName = ctx.update.message.text
+               if (!discordName.match(discordSyntax)) {
+                   ctx.reply('This does not look like a valid Discord name to me. Please try again!')
+                   return
+               }
 
-                tempId = Math.random(); // should be sufficient here
-                ctx.replyWithMarkdown('My colleague `saibot` has sent you a Discord message. Please enter the verification code below.')
-                return ctx.wizard.next()
+               const discordClient = new DiscordClient();
+               tempId = generateRandomId(); // should be sufficient here
+               const result = await discordClient.sendValidationMessage(discordName, tempId)
+               if (!result) {
+                   ctx.replyWithMarkdown('I was unable to send you a Discord message. Please try again later.')
+                   return
+               }
+
+               ctx.replyWithMarkdown('My colleague `' + result.bot_username + '` has sent you a Discord message. Please enter the verification code below.')
+               return ctx.wizard.next()
             },
             (ctx) => {
-                if (ctx.update.message.text !== 'foobar') {
+                if (ctx.update.message.text !== tempId) {
                     ctx.replyWithMarkdown('Wrong verification code. Please try again!')
                     return
                 }
