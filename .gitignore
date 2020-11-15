@@ -8,3 +8,4 @@ coverage
 docs
 .scannerwork/
 saitho-npm-test-*.tgz
+.env
