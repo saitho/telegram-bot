@@ -1,13 +1,13 @@
 import {Command} from "../core/command";
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from 'telegraf-inline-menu'
 import {Context} from "../core/context";
-import {isServiceEnabled, services, subscribe, unsubscribe} from "../core/service";
+import {isServiceEnabled, getServices, subscribe, unsubscribe} from "../core/service";
 
 const menuTemplate = new MenuTemplate<Context>(ctx => `Hey ${ctx.from.first_name}! Please choose a setting you want to change:`)
 
-const notificationSelectSettings = new MenuTemplate<Context>("Test")
-for (const service of services) {
-    notificationSelectSettings.toggle(service.name, service.name.replace(' ', ''), {
+const notificationSelectSettings = new MenuTemplate<Context>("Please select the notifications you want to receive:")
+for (const service of getServices()) {
+    notificationSelectSettings.toggle(service.name, 'service-' + service.id, {
         set: (ctx, choice) => {
             if (!choice) {
                 return unsubscribe(service.id, ctx.from.id)
