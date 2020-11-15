@@ -9,3 +9,4 @@ docs
 .scannerwork/
 saitho-npm-test-*.tgz
 .env
+services.yml
