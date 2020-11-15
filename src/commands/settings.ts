@@ -27,7 +27,7 @@ menuTemplate.interact('❌ Unlink account', 'unlink', {
     // @ts-ignore
     do: async (ctx) => {
         const stmt = Database.connection.prepare('DELETE FROM accounts WHERE telegram_id = ?')
-        const info = stmt.run(ctx.update.message.from.id)
+        const info = stmt.run(ctx.update.callback_query.from.id)
         if (info.changes === 1) {
             await ctx.reply('Your Discord account was unlinked from your Telegram account.')
         } else {
@@ -47,9 +47,11 @@ export class SettingsCommand extends Command {
     }
 
     public run(ctx: Context) {
-        // process.env.DISCORD_BOT_TOKEN
+        const stmt = Database.connection.prepare('SELECT * FROM accounts WHERE telegram_id = ?')
+        const user = stmt.get(ctx.update.message.from.id)
+        if (!user) {
+            return ctx.replyWithMarkdown('Your Telegram account is not linked to a Discord account. You can link it in /link.')
+        }
         return menu.replyToContext(ctx)
-        // await ctx.reply('Hello!')
-        //await ctx.scene.enter('discord__link--new')
     }
 }
