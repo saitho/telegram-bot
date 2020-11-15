@@ -6,15 +6,16 @@ require('dotenv').config()
 const server = fastify({ logger: true })
 
 // Declare a route
-server.get('/send/:serviceId', (request, reply) => {
+server.post('/send/:serviceId', (request, reply) => {
     const subscriptions = getSubscriptions(request.params['serviceId'])
-    const message = request.query['message']
+
+    const message = request.body['message']
     if (!message) {
         reply.code(400).send({error: 'Missing message.'})
         return;
     }
 
-    const recipients = request.query['recipient[]'] ?? []
+    const recipients = request.body['recipients'] ?? []
     if (recipients.length) {
         subscriptions.filter((s) => recipients.indexOf(s.discord_id) !== -1)
     }
