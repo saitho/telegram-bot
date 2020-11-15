@@ -1,9 +1,6 @@
 # Our first stage, that is the Builder
-FROM node:12-alpine AS ts-sample-builder
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache make g++ python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+FROM sitapati/docker-alpine-python-node:latest AS ts-sample-builder
+RUN apk add --update --no-cache make g++
 WORKDIR /app
 COPY . .
 RUN rm -rf dist
@@ -11,11 +8,8 @@ RUN npm install
 RUN npm run build
 
 # Install production NPM packages separately
-FROM node:12-alpine AS npm-packages
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache make g++ python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+FROM sitapati/docker-alpine-python-node:latest AS npm-packages
+RUN apk add --update --no-cache make g++
 WORKDIR /app
 COPY package* ./
 RUN npm install --production
@@ -24,6 +18,7 @@ RUN npm install --production
 FROM node:12-alpine AS ts-sample-prod
 VOLUME /app
 WORKDIR /app
+EXPOSE 3000
 COPY --from=ts-sample-builder ./app/dist ./dist
 COPY package* ./
 COPY --from=npm-packages ./app/node_modules ./node_modules
