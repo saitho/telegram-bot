@@ -2,6 +2,7 @@ import Discord, {Guild, GuildMember} from 'discord.js'
 
 interface DiscordConnection {
     bot_username: string;
+    receiver_id: string;
 }
 
 export class DiscordClient {
@@ -29,7 +30,8 @@ Please enter the following code over on Telegram: \`${validationCode}\`
 If you did not request a code, simply ignore this message!`)
                     this.client.destroy()
                     resolve({
-                        bot_username: this.client.user.tag
+                        bot_username: this.client.user.tag,
+                        receiver_id: user.id
                     })
                 })
                 .catch(console.log);

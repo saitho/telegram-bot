@@ -13,6 +13,8 @@ let tempId = generateRandomId(); // should be sufficient here
 export class LinkCommand extends Command {
     readonly name = 'link'
 
+    protected discordId = ''
+
     public getStage(): WizardScene {
         return new WizardScene('discord__link--new',
             (ctx) => {
@@ -37,6 +39,7 @@ export class LinkCommand extends Command {
                const discordClient = new DiscordClient();
                tempId = generateRandomId(); // should be sufficient here
                const result = await discordClient.sendValidationMessage(discordName, tempId)
+               this.discordId = result.receiver_id
                if (!result) {
                    await ctx.replyWithMarkdown('I was unable to send you a Discord message. Please try again later.')
                    return
@@ -51,7 +54,7 @@ export class LinkCommand extends Command {
                     return
                 }
                 const stmt = Database.connection.prepare('INSERT INTO accounts (telegram_id, discord_id) VALUES (?, ?)')
-                const info = stmt.run(ctx.update.message.from.id, 0)
+                const info = stmt.run(ctx.update.message.from.id, this.discordId)
                 if (info.changes === 1) {
                     ctx.reply(`We're done! I've verified your Discord account and linked it to this Telegram account. You can now configure it by going to the /settings menu.`)
                 } else {
