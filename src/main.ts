@@ -3,6 +3,7 @@ import {Command} from "./core/command";
 import {LinkCommand} from "./commands/link";
 import {SettingsCommand} from "./commands/settings";
 import {Context} from "./core/context";
+import {Notifier} from "./core/notifier";
 
 require('dotenv').config()
 const bot = new Telegraf<Context>(process.env.BOT_TOKEN)
@@ -19,6 +20,9 @@ function registerCommand(command: Command) {
     }
     stage.command(command.name, command.run)
 }
+
+// Check queue and send messages
+new Notifier(bot).init()
 
 registerCommand(new LinkCommand())
 registerCommand(new SettingsCommand())

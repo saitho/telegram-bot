@@ -1,5 +1,15 @@
 import sqlite from "better-sqlite3";
 
+export interface Account {
+    telegram_id: number;
+    discord_id: number;
+}
+
+export interface Subscription {
+    telegram_id: number;
+    service_id: number;
+}
+
 export class Database {
     protected static conn: sqlite = null;
 
@@ -18,10 +28,8 @@ export class Database {
     PRIMARY KEY (telegram_id)
 )`)
         this.connection.exec(`CREATE TABLE IF NOT EXISTS subscriptions (
-    subscription_id INT(255),
     telegram_id INT(255),
     service_id VARCHAR(255),
-    PRIMARY KEY (subscription_id),
     UNIQUE (telegram_id, service_id)
 )`)
     }
