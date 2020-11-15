@@ -1,5 +1,5 @@
 # Our first stage, that is the Builder
-FROM nikolaik/python-nodejs:python3.9-nodejs12-alpine AS npm-packages
+FROM nikolaik/python-nodejs:python3.9-nodejs12-alpine AS ts-sample-builder
 WORKDIR /app
 COPY . .
 RUN rm -rf dist
