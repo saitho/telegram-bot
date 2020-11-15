@@ -8,6 +8,10 @@ RUN npm run build
 
 # Install production NPM packages separately
 FROM node:12-alpine AS npm-packages
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache make g++ python3 && ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools
 WORKDIR /app
 COPY package* ./
 RUN npm install --production
