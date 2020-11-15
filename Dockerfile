@@ -1,6 +1,5 @@
 # Our first stage, that is the Builder
-FROM sitapati/docker-alpine-python-node:latest AS ts-sample-builder
-RUN apk add --update --no-cache make g++
+FROM nikolaik/python-nodejs:python3.9-nodejs12-alpine AS npm-packages
 WORKDIR /app
 COPY . .
 RUN rm -rf dist
@@ -8,8 +7,7 @@ RUN npm install
 RUN npm run build
 
 # Install production NPM packages separately
-FROM sitapati/docker-alpine-python-node:latest AS npm-packages
-RUN apk add --update --no-cache make g++
+FROM nikolaik/python-nodejs:python3.9-nodejs12-alpine AS npm-packages
 WORKDIR /app
 COPY package* ./
 RUN npm install --production
