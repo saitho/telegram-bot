@@ -2,6 +2,7 @@ import {Command} from "../core/command";
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from 'telegraf-inline-menu'
 import {Context} from "../core/context";
 import {isServiceEnabled, getServices, subscribe, unsubscribe} from "../core/service";
+import {Database} from "../core/database";
 
 const menuTemplate = new MenuTemplate<Context>(ctx => `Hey ${ctx.from.first_name}! Please choose a setting you want to change:`)
 
@@ -25,7 +26,13 @@ menuTemplate.submenu('✉ Notification settings', 'notification', notificationSe
 menuTemplate.interact('❌ Unlink account', 'unlink', {
     // @ts-ignore
     do: async (ctx) => {
-        await ctx.reply('As am I!')
+        const stmt = Database.connection.prepare('DELETE FROM accounts WHERE telegram_id = ?')
+        const info = stmt.run(ctx.update.message.from.id)
+        if (info.changes === 1) {
+            await ctx.reply('Your Discord account was unlinked from your Telegram account.')
+        } else {
+            await ctx.reply('An error occurred while trying to unlink your Telegram account.')
+        }
         return false
     }
 })
